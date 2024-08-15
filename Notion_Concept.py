@@ -1,6 +1,4 @@
 # Your Python code goes here 
-pip install langchain langchain_community requests tqdm
-
 from langchain_community.llms import Ollama
 import requests
 import json
