@@ -1,28 +1,28 @@
-name: Run Notion Script
+name: Run Python Script
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # This will run daily at midnight UTC
-  workflow_dispatch:  # Allows manual triggering from GitHub UI
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+  workflow_dispatch:
 
 jobs:
-  build:
+  run-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Specify the Python version
+        python-version: '3.9'
 
     - name: Install dependencies
       run: |
-        pip install --upgrade pip
-        pip install langchain langchain-community requests tqdm
-        pip show langchain-community  # Verify that langchain-community is installed
+        pip install -r requirements.txt
+        pip install langchain-community
 
-    - name: Run Notion Script
-      run: python Notion_Concept.py  # Ensure your script's name is correct
+    - name: Run script
+      run: |
+        python Notion_Concept.py
