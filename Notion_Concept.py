@@ -1,5 +1,3 @@
-# Your Python code goes here 
-from langchain_community.llms import Ollama
 import requests
 import json
 from datetime import datetime, timezone
@@ -7,9 +5,13 @@ from tqdm import tqdm
 
 # Initialize the LLM model (ensure you have the correct library and initialization code)
 try:
+    from langchain_community.llms import Ollama
     llm = Ollama(model="llama3")  # Replace with the correct initialization code for your model
-except NameError:
-    print("Error: LLM model is not initialized. Make sure you have the correct library and initialization code.")
+except ImportError:
+    print("Error: langchain_community library is not installed. Ensure it's in your environment.")
+    llm = None
+except Exception as e:
+    print(f"Error initializing LLM model: {e}")
     llm = None  # Handle the case where the LLM model isn't available
 
 NOTION_TOKEN = "secret_eZBYbDJ9NdkoBpCCYfE9SoqLmrE8FmEmtTHdczFVO6v"
@@ -127,9 +129,8 @@ def patch_page_with_analysis(page_id, analysis):
     except requests.exceptions.RequestException as e:
         print(f"Error updating page {page_id}: {e}")
         print(f"Payload sent: {json.dumps(payload, indent=4)}")
-        print(f"Response content: {response.content.decode('utf-8')}")
-
-
+        if response is not None:
+            print(f"Response content: {response.content.decode('utf-8')}")
 
 def save_to_json(data, filename='notion_data_with_analysis.json'):
     with open(filename, 'w', encoding='utf8') as f:
@@ -147,7 +148,7 @@ if __name__ == "__main__":
         # Debugging: Print parsed data to ensure correctness
         print(f"Parsed Data: {parsed_data}")
 
-        if 'title' in parsed_data:
+        if 'title' in parsed_data and parsed_data['title']:
             # Analyze the content with LLM
             analysis = analyze_property_with_llm(parsed_data['title'], parsed_data['url'], parsed_data['published'])
             parsed_data['analysis'] = analysis
@@ -155,7 +156,7 @@ if __name__ == "__main__":
             # Patch the page with the LLM analysis
             patch_page_with_analysis(parsed_data['id'], analysis)
         else:
-            print(f"Skipping page with ID {parsed_data.get('id', 'Unknown ID')} due to missing 'title'.")
+            print(f"Skipping page with ID {parsed_data.get('id', 'Unknown ID')} due to missing or empty 'title'.")
 
         parsed_pages.append(parsed_data)
 
