@@ -19,8 +19,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install langchain langchain_community requests tqdm
-        pip show langchain_community  # This checks if the package is installed
+        pip install --upgrade pip
+        pip install langchain langchain-community requests tqdm
+        pip show langchain-community  # Verify that langchain-community is installed
 
     - name: Run Notion Script
       run: python Notion_Concept.py  # Ensure your script's name is correct
