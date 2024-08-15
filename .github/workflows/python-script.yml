@@ -23,6 +23,24 @@ jobs:
         pip install -r requirements.txt
         pip install langchain-community
 
+    - name: List installed packages
+      run: pip list
+
+    - name: Debug output
+      run: |
+        echo "Python Version: $(python --version)"
+        echo "PIP Version: $(pip --version)"
+        echo "Current Directory: $(pwd)"
+        ls -al
+
     - name: Run script
       run: |
         python Notion_Concept.py
+
+    - name: Check JSON file
+      run: |
+        if [ -f "notion_data_with_analysis.json" ]; then
+          cat notion_data_with_analysis.json
+        else
+          echo "JSON file not found!"
+        fi
